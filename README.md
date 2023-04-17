@@ -5,15 +5,15 @@ This project was requested by a tech startup, focused mainly on providing Machin
 Term deposit subscription classification models in the banking sector.
 
 ## Project Status
-Project in progress
+Project in progress.
 
 ## Project goal and usefulness
-**Main goal:**  
+**Main goal:**  Work in progress.
 
 **Usefulness:** This project is intended to benefit 2 groups of people: 
 
-1. *The company:* 
-2. *Beginner quantitative marketing analysts or beginner data scientists:*  Also, it may enlight them on how a complete Data Science project would look like.  
+1. *The company:* Work in progress
+2. *Beginner quantitative marketing analysts or beginner data scientists:*  It may enlight beginner marketing analysts and beginner Data Scientists on how a complete Data Science project would look like.  
 
 ## Methods Used
 * Crisp-DM methodology.
