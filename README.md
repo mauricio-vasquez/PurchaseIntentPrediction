@@ -8,7 +8,7 @@ Term deposit subscription classification models in the banking sector.
 Project in progress.
 
 ## Project goal and usefulness
-**Main goal:**  Work in progress.
+**Main goal:** TBA
 
 **Usefulness:** This project is intended to benefit 2 groups of people: 
 
