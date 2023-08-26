@@ -11,22 +11,22 @@
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
 
 
-# ### Basic libraries
+# Install libraries
+#pip install numpy sklearn imblearn shap catboost pathlib
 
+#Import libraries
 import numpy as np
-import sys
 #import sklearn.neighbors._base
 #sys.modules['sklearn.neighbors.base'] = sklearn.neighbors._base
 
 # Data processing
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.compose import ColumnTransformer
+#from sklearn.compose import ColumnTransformer
 #from sklearn.base import BaseEstimator, TransformerMixin
 
 # EDA & Visualization
@@ -41,8 +41,8 @@ from catboost import CatBoostClassifier
 
 # a. Paths
 from pathlib import Path, PureWindowsPath
-#path = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing\\Data\\Apziva\\"
-path = r"C:\\Users\\vasquezm\\OneDrive - ROBALINO\\Documentos\\Mauricio V\\Capacitaciones\\Autocapacitacion\\Apziva\\Project 2 - term deposit marketing\\Data\\Apziva\\"
+path = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing\\Data\\Apziva\\"
+#path = r"C:\\Users\\vasquezm\\OneDrive - ROBALINO\\Documentos\\Mauricio V\\Capacitaciones\\Autocapacitacion\\Apziva\\Project 2 - term deposit marketing\\Data\\Apziva\\"
 file = 'term-deposit-marketing-2020.csv'
 file_to_open = Path(path) / file
 
@@ -198,7 +198,7 @@ X_train_sm, Y_train_sm = oversample.fit_resample(X_train, Y_train)
 cbc = CatBoostClassifier(random_seed=42, logging_level='Silent') # Do not output any logging information.
 
 # Train model 
-categorical_selector(X_train_sm, num_cols)
+cat_features = categorical_selector(X_train_sm, num_cols)
 cbclf = cbc.fit(X_train_sm,Y_train_sm, 
         cat_features = cat_features,  
         eval_set=(X_test, Y_test) 
