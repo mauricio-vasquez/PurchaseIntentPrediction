@@ -5,11 +5,13 @@
 
 # ### Prepared by: Mauricio Vásquez A. 
 # ### Mentor: Swarnabha Ghosh. 
-# ### August 2023
+# ### Last updated on: August 2023
 # 
 # #### Contact email: mauricio_vasquez_andrade@hotmail.com
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
 
+
+#### MAIN SCRIPT ####
 
 # Install libraries
 #pip install numpy sklearn imblearn shap catboost pathlib
@@ -37,23 +39,8 @@ from sklearn.model_selection import train_test_split, cross_val_score, GridSearc
 from sklearn import metrics
 from catboost import CatBoostClassifier
 
-# ## 0. Define config variables
-
-# a. Paths
-from pathlib import Path, PureWindowsPath
-path = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing\\Data\\Apziva\\"
-#path = r"C:\\Users\\vasquezm\\OneDrive - ROBALINO\\Documentos\\Mauricio V\\Capacitaciones\\Autocapacitacion\\Apziva\\Project 2 - term deposit marketing\\Data\\Apziva\\"
-file = 'term-deposit-marketing-2020.csv'
-file_to_open = Path(path) / file
-
-# b. Data labels and columns
-tagsy = ['No (0)', 'Yes (1)']
-ordinal_columns = ['education', 'month']
-ordinal_categories = [['primary', 'secondary', 'tertiary'],
-                      ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']]
-
-#Define numeric columns
-num_cols = ['age','balance', 'duration', 'campaign']
+# Import defined variables
+import settings
 
 # Function to define a list of nominal columns
 def nominal_selector(df, ordinal_cols):
@@ -243,3 +230,4 @@ shap.summary_plot(shapvalues, X_test, plot_type='bar')
 
 #  ### 3.4. Customer profile and model explainability
 shap.summary_plot(shapvalues, X_test)
+
