@@ -1,5 +1,0 @@
-25 august 2023
-
-1. Why the settings module is not being found in main, when importing it? 
-2. How do I run an entire script to install packages (without running it line to line)? 
-3. How can I merge this branch to main branch?
