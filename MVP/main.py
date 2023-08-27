@@ -40,7 +40,7 @@ from sklearn import metrics
 from catboost import CatBoostClassifier
 
 # Import defined variables
-import settings
+import settings1
 
 # Function to define a list of nominal columns
 def nominal_selector(df, ordinal_cols):
