@@ -23,6 +23,8 @@ from sklearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import MinMaxScaler
 
+import usersetts
+
 # Function to define a list of nominal columns
 def nominal_selector(df, ordinal_cols):
     """
@@ -81,23 +83,6 @@ def ordinalcopier(data, cols = ordinal_columns):
 
 # Create indepent transformers for ordinal variables
 ordcopytransform = FunctionTransformer(ordinalcopier)
-
-# Create the pipeline for ordinal variables
-ord_steps = ( [ 
-    ('copyordinal', ordcopytransform), 
-    ('imputer', SimpleImputer(strategy='most_frequent', missing_values='unknown')),
-    ('encoder', OrdinalEncoder(categories=ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan)),
-    ] )
-
-ord_pipe = Pipeline(ord_steps)
-
-X_train[ordinal_columns] = ord_pipe.fit_transform(X_train[ordinal_columns])
-
-X_train[ordinal_columns] = X_train[ordinal_columns].astype('int')
-
-X_test[ordinal_columns] = ord_pipe.fit_transform(X_test[ordinal_columns])
-
-X_test[ordinal_columns] = X_test[ordinal_columns].astype('int')
 
 # ### 2.2. Nominal features
 
