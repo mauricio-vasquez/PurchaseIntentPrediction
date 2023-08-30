@@ -17,6 +17,7 @@
 #pip install numpy sklearn imblearn shap catboost pathlib
 
 #Import libraries
+import pandas as pd
 import numpy as np
 #import sklearn.neighbors._base
 #sys.modules['sklearn.neighbors.base'] = sklearn.neighbors._base
@@ -29,13 +30,21 @@ import numpy as np
 import shap
 
 # Modelling
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV, cross_validate
+from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from catboost import CatBoostClassifier
 
 # Import defined variables
-import usersettings
+import usersetts
 
+# Ordinal variables transform
+X_train[usersetts.ordinal_columns] = pipelines.ord_pipe.fit_transform(X_train[usersetts.ordinal_columns])
+
+X_train[usersetts.ordinal_columns] = X_train[usersetts.ordinal_columns].astype('int')
+
+X_test[usersetts.ordinal_columns] = pipelines.ord_pipe.fit_transform(X_test[ordinal_columns])
+
+X_test[usersetts.ordinal_columns] = X_test[usersetts.ordinal_columns].astype('int')
 
 # ## 3. Model training, selection and evaluation
 # ### 3.1. Models with oversampled data and all variables
