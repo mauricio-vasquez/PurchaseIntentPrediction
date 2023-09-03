@@ -25,6 +25,20 @@ from sklearn.preprocessing import MinMaxScaler
 
 import usersetts
 
+# ## 1. Data importing 
+# Define function to read a csv into a Dataframe
+
+def opensplitdata(file_to_open, target_var):
+    data = pd.read_csv(file_to_open)
+    #Prepare data
+    X = data.loc[:, data.columns != target_var]
+    Y = data[target_var]
+    # Split
+    X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2,random_state=42)
+    return X_train, X_test, Y_train, Y_test
+
+# ## 2. Data processing 
+
 # Function to define a list of nominal columns
 def nominal_selector(df, ordinal_cols):
     """
@@ -48,20 +62,6 @@ def categorical_selector(df, num_cols):
     cat_features =[ele for ele in df.columns.tolist() if ele not in num_cols]
     return cat_features
 
-# ## 1. Data importing 
-# Define function to read a csv into a Dataframe
-
-def opensplitdata(file_to_open, target_var):
-    bankleads = pd.read_csv(file_to_open)
-    #Prepare data
-    X = bankleads.loc[:, bankleads.columns != target_var]
-    Y = bankleads[target_var]
-    # Split
-    X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2,random_state=42)
-    return X_train, X_test, Y_train, Y_test
-
-# ## 2. Data processing 
-
 # Most classification models do not admit string variables as inputs, therefore, they must be converted to numeric types. Also, ordinal variables should be encoded accordingly in order to be interpreted correctly by the classification models. Next we will perform some operations on data to overcome this issues.
 # ### 2.1. Ordinal features
 
@@ -80,9 +80,6 @@ def ordinalcopier(data, cols = ordinal_columns):
     
     data[cols] = data[cols].copy()
     return data
-
-# Create indepent transformers for ordinal variables
-ordcopytransform = FunctionTransformer(ordinalcopier)
 
 # ### 2.2. Nominal features
 
