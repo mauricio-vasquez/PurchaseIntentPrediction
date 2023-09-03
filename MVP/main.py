@@ -23,6 +23,12 @@ import numpy as np
 #sys.modules['sklearn.neighbors.base'] = sklearn.neighbors._base
 
 
+# Import user defined variables
+import usersetts as setts
+
+# Import preprocessing
+import etl
+
 #from sklearn.compose import ColumnTransformer
 #from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -34,17 +40,15 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from catboost import CatBoostClassifier
 
-# Import defined variables
-import usersetts
 
-# Ordinal variables transform
-X_train[usersetts.ordinal_columns] = pipelines.ord_pipe.fit_transform(X_train[usersetts.ordinal_columns])
+if __name__=='__main__':
+    # 1. Data importing 
+    file_to_open = setts.filepath()
+    X_train, X_test, Y_train, Y_test = etl.opensplitdata(file_to_open, setts.target_var)
+    
+    # 2. Data processing 
+    
 
-X_train[usersetts.ordinal_columns] = X_train[usersetts.ordinal_columns].astype('int')
-
-X_test[usersetts.ordinal_columns] = pipelines.ord_pipe.fit_transform(X_test[ordinal_columns])
-
-X_test[usersetts.ordinal_columns] = X_test[usersetts.ordinal_columns].astype('int')
 
 # ## 3. Model training, selection and evaluation
 # ### 3.1. Models with oversampled data and all variables
