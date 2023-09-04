@@ -1,4 +1,16 @@
-#### Pipelines SCRIPT ####
+# # APZIVA AI RESIDENCY PROGRAM
+# 
+# ## Project 2: Intent Marketing - MINIMUM VIABLE PRODUCT ##
+# ### Lead prediction system for the banking business
+
+# ### Prepared by: Mauricio Vásquez A. 
+# ### Mentor: Swarnabha Ghosh. 
+# ### Last updated on: August 2023
+# 
+# #### Contact email: mauricio_vasquez_andrade@hotmail.com
+# #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
+
+#### DATA PROCESSING PIPELINES SCRIPT ####
 
 #import libraries
 import pandas as pd
@@ -19,13 +31,15 @@ def functiontransformer(object):
     transformed_obj = FunctionTransformer(object)
     return transformed_obj
 
-ordcopytransform = functiontransformer(etl.ordinalcopier)
-
+# Create pipeline for ordinal variables 
 ord_pipe = Pipeline( [ 
-    ('copyordinal', ordcopytransform), 
+    ('copyordinal', functiontransformer(etl.ordinalcopier)), 
     ('imputer', SimpleImputer(strategy='most_frequent', missing_values='unknown')),
     ('encoder', OrdinalEncoder(categories=ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan)),
     ] )
+
+# Select nominal columns
+nom_cols = nominal_selector(X_train, setts.ordinal_columns)
 
 """
 # Ordinal variables transform

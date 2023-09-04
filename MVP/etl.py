@@ -14,7 +14,11 @@
 #### ETL SCRIPT ####
 
 #import libraries
+
+# Basic libraries
+import usersetts as setts # user settings
 import pandas as pd
+
 # Data processing
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import FunctionTransformer
@@ -22,8 +26,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import MinMaxScaler
-
-import usersetts
+from sklearn.model_selection import train_test_split
 
 # ## 1. Data importing 
 # Define function to read a csv into a Dataframe
@@ -66,7 +69,7 @@ def categorical_selector(df, num_cols):
 # ### 2.1. Ordinal features
 
 # Create a copy of ordinal columns
-def ordinalcopier(data, cols = ordinal_columns):
+def ordinalcopier(data, cols = setts.ordinal_columns):
     """
     Takes a dataframe and returns a copy of it. By default, takes all dataframe columns, unless specified. 
     
@@ -82,9 +85,6 @@ def ordinalcopier(data, cols = ordinal_columns):
     return data
 
 # ### 2.2. Nominal features
-
-# Select nominal columns
-nom_cols = nominal_selector(X_train, ordinal_columns)
 
 # Define a function to encode string variables as dummies.
 
@@ -107,7 +107,7 @@ def one_hot_encode(df, nominal_columns):
 
 
 # ##### a. Train dataset transformation
-
+"""
 # Impute unknown values with the most frequent value
 imputer = SimpleImputer(strategy='most_frequent', missing_values='unknown')
 X_train[nom_cols] = imputer.fit_transform(X_train[nom_cols])
@@ -131,3 +131,4 @@ def scale_numeric_columns(data, columns):
 
 X_train = scale_numeric_columns(X_train, num_cols)
 X_test = scale_numeric_columns(X_test, num_cols)
+"""
