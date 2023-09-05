@@ -23,13 +23,13 @@ import pandas as pd
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
+from sklearn.base import BaseEstimator, TransformerMixin
 
 # ## 1. Data importing 
-# Define function to read a csv into a Dataframe
+# Define function to read a csv into a Dataframe and split it into train and test
 
 def opensplitdata(file_to_open, target_var):
     data = pd.read_csv(file_to_open)
@@ -42,8 +42,12 @@ def opensplitdata(file_to_open, target_var):
 
 # ## 2. Data processing 
 
+# Ordinal variables selector function 
+def ordinal_selector(df, ordinal_cols = setts.ordinal_columns):
+    return df[ordinal_cols]
+
 # Function to define a list of nominal columns
-def nominal_selector(df, ordinal_cols):
+def nominal_cols(df, ordinal_cols):
     """
     Returns a list of non numerical and non ordinal string variables.
     
@@ -59,6 +63,12 @@ def nominal_selector(df, ordinal_cols):
         else:
             pass
     return nom_cols
+
+# Select nominal columns
+def nominal_selector(df, ordinal_cols = setts.ordinal_columns):
+    nom_cols = nominal_cols(df, ordinal_columns)
+    nominal_feats = df[nom_cols]
+    return nominal_feats
 
 # Define categorical variables
 def categorical_selector(df, num_cols):
