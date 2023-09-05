@@ -32,8 +32,7 @@ import etl
 
 if __name__=='__main__':
     # 1. Data importing 
-    file_to_open = setts.filepath()
-    X_train, X_test, Y_train, Y_test = etl.opensplitdata(file_to_open, setts.target_var)
+    X_train, X_test, Y_train, Y_test = etl.opensplitdata()
     
     # 2. Data processing 
     
