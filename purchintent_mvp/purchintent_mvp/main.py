@@ -37,13 +37,7 @@ if __name__=='__main__':
     
     # 2. Data processing 
     
-"""
-# Ordinal variables transform
-X_train[setts.ordinal_columns] = pipelines.ord_pipe.fit_transform(X_train[setts.ordinal_columns])
 
-X_train[setts.ordinal_columns] = X_train[setts.ordinal_columns].astype('int')
-
-"""
 
 
 

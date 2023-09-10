@@ -94,6 +94,20 @@ def ordinalcopier(data, cols = setts.ordinal_columns):
     data[cols] = data[cols].copy()
     return data
 
+def copyordinal(functionobj = ordinalcopier):
+    copyordinal = FunctionTransformer(functionobj)
+    return copyordinal
+ 
+def ordinalimputer(df, columns = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown'):
+    imputer = SimpleImputer(strategy=strategy, missing_values=missing_values)
+    df[columns] = imputer.fit_transform(df[columns])
+    return df
+
+def ord_encode(df, columns = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan):
+    encoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
+    df[columns] = encoder.fit_transform(df[columns])
+    return df
+
 # ### 2.2. Nominal features
 
 # Define a function to encode string variables as dummies.
@@ -114,6 +128,7 @@ def one_hot_encode(df, nominal_columns):
     
     # Return the encoded DataFrame.
     return encoded_df
+
 
 
 # ##### a. Train dataset transformation
