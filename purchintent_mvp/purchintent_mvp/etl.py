@@ -18,6 +18,7 @@
 # Basic libraries
 import usersetts as setts # user settings
 import pandas as pd
+import numpy as np
 
 # Data processing
 from sklearn.preprocessing import OrdinalEncoder
@@ -45,26 +46,22 @@ def opensplitdata(file_to_open = None, target_var = setts.target_var):
 # ## 2. Data processing 
 
 # Define categorical variables
-def categorical_selector(df, num_cols):
+def categorical_selector(df, num_cols = setts.num_cols):
     cat_features =[ele for ele in df.columns.tolist() if ele not in num_cols]
     return cat_features
 
 # Most classification models do not admit string variables as inputs, therefore, they must be converted to numeric types. Also, ordinal variables should be encoded accordingly in order to be interpreted correctly by the classification models. Next we will perform some operations on data to overcome this issues.
+
 # ### 2.1. Ordinal features
-
-# Ordinal variables selector function 
-def ordinal_selector(df, ordinal_cols = setts.ordinal_columns):
-    return df[ordinal_cols]
-
 # Create a copy of ordinal columns
 def ordinalcopier(df, cols = setts.ordinal_columns):
     """
-    Takes a dataframe and returns a copy of it. By default, takes all dataframe columns, unless specified. 
+    Takes a dataframe and returns a copy of it. By default, takes ordinal columns. 
     
     Parameters:
     
     data: A dataframe
-    cols: list of columns. By default, takes all dataframe columns.
+    cols: list of columns. By default, takes user specified ordinal columns. If not specified, takes all columns.
     """
     if cols is None:
         cols = df.columns.tolist()
@@ -99,12 +96,13 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
     """
     ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
     df[cols] = ordencoder.fit_transform(df[cols])
+    df[cols] = df[cols].astype('int')
     return df
 
 # ### 2.2. Nominal features
 
 # Function to define a list of nominal columns
-def nominal_cols(df, ordinal_cols):
+def nominal_cols(df, ordinal_cols = setts.ordinal_columns):
     """
     Returns a list of non numerical and non ordinal string variables.
     
@@ -120,15 +118,9 @@ def nominal_cols(df, ordinal_cols):
             pass
     return nom_cols
 
-# Select nominal columns
-def nominal_selector(df, ordinal_cols = setts.ordinal_columns):
-    nom_cols = nominal_cols(df, ordinal_columns)
-    nominal_feats = df[nom_cols]
-    return nominal_feats
-
 # Define a function to encode string variables as dummies.
 
-def one_hot_encode(df, nominal_columns):
+def one_hot_encode(df, nominal_columns = None):
     """
     Apply one hot encoding to user selected variables, then, drop one column if the column has a binary category.
   
@@ -140,19 +132,29 @@ def one_hot_encode(df, nominal_columns):
     A pandas DataFrame with the encoded variables.
     """       
     # One hot encode the string type variables.
-    encoded_df = pd.get_dummies(df, drop_first=True, dtype=int, columns = nominal_columns)
+    if nominal_columns is None:
+        nominal_columns = nominal_cols(df)
+    df = pd.get_dummies(df, drop_first=True, dtype=int, columns = nominal_columns)
     
     # Return the encoded DataFrame.
-    return encoded_df
+    return df
 
-##### NOTE: LAST UPDATE ENDS HERE: 04SEP2023, 23H41 ###########
-
-"""
-# Impute unknown values with the most frequent value
-imputer = SimpleImputer(strategy='most_frequent', missing_values='unknown')
-X_train[nom_cols] = imputer.fit_transform(X_train[nom_cols])
-X_train = one_hot_encode(X_train, nom_cols)
-
+def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown'):
+    """Function that imputes data using sklearn's SimpleImputer
+    
+    Parameters:
+        df: Dataframe
+        cols: List of columns
+        strategy: imputation strategy. By default, is set to 'most_frequent'
+        missing_values: Placeholder for the missing values. By default, treats the word 'unknown' as missing.   
+        
+    For more information, see https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html 
+    """
+    if nom_cols is None:
+        nom_cols = nominal_cols(df, ordinal_cols)
+    imputer = SimpleImputer(strategy = strategy, missing_values = missing_values)    
+    df[nom_cols] = imputer.fit_transform(df[nom_cols])
+    return df 
 
 # ### 2.3. Numeric features
 # Rescale numeric features in order to prepare them for resampling
@@ -161,7 +163,3 @@ def scale_numeric_columns(data, columns):
     scaled_data = data.copy()
     scaled_data[columns] = scaler.fit_transform(scaled_data[columns])
     return scaled_data
-
-X_train = scale_numeric_columns(X_train, num_cols)
-X_test = scale_numeric_columns(X_test, num_cols)
-"""
