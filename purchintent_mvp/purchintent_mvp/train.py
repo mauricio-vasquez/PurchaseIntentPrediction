@@ -19,6 +19,7 @@ import shap
 # Modelling
 from sklearn import metrics
 from catboost import CatBoostClassifier
+import etl
 
 # ## 3. Model training, selection and evaluation
 # ### 3.1. Models with oversampled data and all variables
@@ -32,7 +33,7 @@ X_train_sm, Y_train_sm = oversample.fit_resample(X_train, Y_train)
 cbc = CatBoostClassifier(random_seed=42, logging_level='Silent') # Do not output any logging information.
 
 # Train model 
-cat_features = categorical_selector(X_train_sm, num_cols)
+cat_features = etl.categorical_selector(X_train_sm, num_cols)
 cbclf = cbc.fit(X_train_sm,Y_train_sm, 
         cat_features = cat_features,  
         eval_set=(X_test, Y_test) 
