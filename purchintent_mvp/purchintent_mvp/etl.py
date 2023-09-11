@@ -19,7 +19,7 @@
 import usersetts as setts # user settings
 import pandas as pd
 import numpy as np
-from pickle import dump
+from pickle import dump, load
 
 # Data processing
 from sklearn.preprocessing import OrdinalEncoder
@@ -179,7 +179,7 @@ def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strat
         df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
     elif load_imputer is True:
         nomimputer = load(open('nominalimputer.pkl','rb'))
-        df[cols] = nomimputer.fit_transform(df[cols])
+        df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
     else:
         nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
         df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
