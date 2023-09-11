@@ -5,7 +5,7 @@
 
 # ### Prepared by: Mauricio Vásquez A. 
 # ### Mentor: Swarnabha Ghosh. 
-# ### Last updated on: August 2023
+# ### Last updated on: September 2023
 # 
 # #### Contact email: mauricio_vasquez_andrade@hotmail.com
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
@@ -31,17 +31,16 @@ def cleandata(df):
     # Data processing 
     ### Ordinal features
     df = etl.ordinalcopier(df)   
-    df = etl.ord_imputer(df)
-    df = etl.ord_encode(df)
+    df = etl.ord_imputer(df, save_imputer = True)
+    df = etl.ord_encode(df, save_encoder = True)
 
     ### Nominal features
-    df = etl.nom_imputer(df)
+    df = etl.nom_imputer(df, save_imputer = True)
     df = etl.one_hot_encode(df)
 
     ### Numeric features
     df = etl.scale_numeric_columns(df)
     return df
-
 
 if __name__=='__main__':
     # Run importing and cleaning

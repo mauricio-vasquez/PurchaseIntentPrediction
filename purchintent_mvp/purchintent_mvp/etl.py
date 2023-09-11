@@ -5,7 +5,7 @@
 
 # ### Prepared by: Mauricio Vásquez A. 
 # ### Mentor: Swarnabha Ghosh. 
-# ### Last updated on: August 2023
+# ### Last updated on: September 2023
 # 
 # #### Contact email: mauricio_vasquez_andrade@hotmail.com
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
@@ -19,6 +19,7 @@
 import usersetts as setts # user settings
 import pandas as pd
 import numpy as np
+from pickle import dump
 
 # Data processing
 from sklearn.preprocessing import OrdinalEncoder
@@ -69,7 +70,7 @@ def ordinalcopier(df, cols = setts.ordinal_columns):
     df[cols] = df[cols].copy()
     return df
 
-def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown'):
+def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown', save_imputer = False, load_imputer = False):
     """Function that imputes data using sklearn's SimpleImputer
     
     Parameters:
@@ -77,14 +78,26 @@ def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', miss
         cols: List of columns
         strategy: imputation strategy. By default, is set to 'most_frequent'
         missing_values: Placeholder for the missing values. By default, treats the word 'unknown' as missing.   
-        
+        save_imputer: boolean, True: serializes sklearn imputer, False: do not save sklearn imputer and checks if a pickle object is to be loaded.
+        load_imputer: boolean, True: loads serialized sklearn imputer. False: do not load imputer. 
     For more information, see https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html 
     """
-    imputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
-    df[cols] = imputer.fit_transform(df[cols])
+   
+    # Optional: Serialize imputer
+    if save_imputer is True:
+        ordimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
+        dump(ordimputer, open('ordinalimputer.pkl','wb'))
+        df[cols] = ordimputer.fit_transform(df[cols])
+    elif load_imputer is True:
+        ordimputer = load(open('ordinalimputer.pkl','rb'))
+        df[cols] = ordimputer.fit_transform(df[cols])
+    else:
+        ordimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
+        df[cols] = ordimputer.fit_transform(df[cols])
+              
     return df
 
-def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan):
+def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan, save_encoder = False):
     """Function that encodes ordinal variables using sklearn's OrdinalEncoder
 
     Parameters:
@@ -95,6 +108,12 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
         unknown_value (int or np.nan): _description_. Defaults to np.nan.
     """
     ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
+    # Optional: Serialize encoder
+    if save_encoder is True:
+        dump(ordencoder, open('ordinalencoder.pkl','wb'))
+    else:
+        pass
+    # Encode ordinal variables
     df[cols] = ordencoder.fit_transform(df[cols])
     df[cols] = df[cols].astype('int')
     return df
@@ -139,7 +158,7 @@ def one_hot_encode(df, nominal_columns = None):
     # Return the encoded DataFrame.
     return df
 
-def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown'):
+def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strategy='most_frequent', missing_values='unknown', save_imputer = False, load_imputer = False):
     """Function that imputes data using sklearn's SimpleImputer
     
     Parameters:
@@ -152,8 +171,24 @@ def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strat
     """
     if nom_cols is None:
         nom_cols = nominal_cols(df, ordinal_cols)
-    imputer = SimpleImputer(strategy = strategy, missing_values = missing_values)    
-    df[nom_cols] = imputer.fit_transform(df[nom_cols])
+
+    # Optional: Serialize imputer
+    if save_imputer is True:
+        nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)    
+        dump(nomimputer, open('nominalimputer.pkl','wb'))
+        df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
+    elif load_imputer is True:
+        nomimputer = load(open('nominalimputer.pkl','rb'))
+        df[cols] = nomimputer.fit_transform(df[cols])
+    else:
+        nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
+        df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
+
+
+
+    
+    
+
     return df 
 
 # ### 2.3. Numeric features
