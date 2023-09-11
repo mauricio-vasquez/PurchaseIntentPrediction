@@ -27,24 +27,27 @@ import usersetts as setts
 # Import preprocessing
 import etl
 
-#from sklearn.compose import ColumnTransformer
-#from sklearn.base import BaseEstimator, TransformerMixin
+def cleandata(df):  
+    # Data processing 
+    ### Ordinal features
+    df = etl.ordinalcopier(df)   
+    df = etl.ord_imputer(df)
+    df = etl.ord_encode(df)
+
+    ### Nominal features
+    df = etl.nom_imputer(df)
+    df = etl.one_hot_encode(df)
+
+    ### Numeric features
+    df = etl.scale_numeric_columns(df)
+    return df
+
 
 if __name__=='__main__':
-    # 1. Data importing 
+    # Run importing and cleaning
+     # Import data 
     X_train, X_test, Y_train, Y_test = etl.opensplitdata()
-    
-    # 2. Data processing 
+    # Clean data
+    X_train = cleandata(X_train)
 
-# ### 2.1. Ordinal features
-X_train = etl.ordinalcopier(X_train)   
-X_train = etl.ord_imputer(X_train)
-X_train = etl.ord_encode(X_train)
-
-# ### 2.2. Nominal features
-X_train = etl.nom_imputer(X_train)
-X_train = etl.one_hot_encode(X_train)
-
-# ### 2.3. Numeric features
-X_train = scale_numeric_columns(X_train, num_cols)
 

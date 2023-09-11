@@ -158,7 +158,7 @@ def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strat
 
 # ### 2.3. Numeric features
 # Rescale numeric features in order to prepare them for resampling
-def scale_numeric_columns(data, columns):
+def scale_numeric_columns(data, columns = setts.num_cols):
     scaler = MinMaxScaler()
     scaled_data = data.copy()
     scaled_data[columns] = scaler.fit_transform(scaled_data[columns])
