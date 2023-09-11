@@ -47,6 +47,4 @@ X_train = etl.one_hot_encode(X_train)
 
 # ### 2.3. Numeric features
 X_train = scale_numeric_columns(X_train, num_cols)
-X_test = scale_numeric_columns(X_test, num_cols)
-
 
