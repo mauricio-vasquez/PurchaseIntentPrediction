@@ -27,6 +27,9 @@ import usersetts as setts
 # Import preprocessing
 import etl
 
+# Import training
+import train
+
 def cleandata(df):  
     # Data processing 
     ### Ordinal features
@@ -42,11 +45,17 @@ def cleandata(df):
     df = etl.scale_numeric_columns(df)
     return df
 
+def training(X_train,Y_train, X_test, Y_test):
+    train.catboostcl(X_train,Y_train, X_test, Y_test)
+
+
 if __name__=='__main__':
     # Run importing and cleaning
      # Import data 
     X_train, X_test, Y_train, Y_test = etl.opensplitdata()
     # Clean data
     X_train = cleandata(X_train)
+    X_test = cleandata(X_test)
+    cbclf = training(X_train,Y_train, X_test, Y_test)
 
 
