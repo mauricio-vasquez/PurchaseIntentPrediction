@@ -183,12 +183,6 @@ def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strat
     else:
         nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
         df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
-
-
-
-    
-    
-
     return df 
 
 # ### 2.3. Numeric features

@@ -20,6 +20,7 @@ import shap
 from sklearn import metrics
 from imblearn.over_sampling import SMOTE
 from catboost import CatBoostClassifier
+from pickle import dump
 import etl
 
 # ## 3. Model training, selection and evaluation

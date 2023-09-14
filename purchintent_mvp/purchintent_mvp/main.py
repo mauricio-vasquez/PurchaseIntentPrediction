@@ -19,9 +19,6 @@
 #Import libraries
 import pandas as pd
 import numpy as np
-#import sklearn.neighbors._base
-#sys.modules['sklearn.neighbors.base'] = sklearn.neighbors._base
-
 import usersetts as setts
 
 # Import preprocessing
@@ -56,6 +53,7 @@ if __name__=='__main__':
     # Clean data
     X_train = cleandata(X_train)
     X_test = cleandata(X_test)
+    # Train model
     cbclf = training(X_train,Y_train, X_test, Y_test)
 
 
