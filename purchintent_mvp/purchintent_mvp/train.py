@@ -5,87 +5,55 @@
 
 # ### Prepared by: Mauricio Vásquez A. 
 # ### Mentor: Swarnabha Ghosh. 
-# ### Last updated on: August 2023
+# ### Last updated on: September 2023
 # 
 # #### Contact email: mauricio_vasquez_andrade@hotmail.com
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
 
 
-#### MODEL TRAINING SCRIPT ####
+#### MAIN TRAINING SCRIPT ####
 
-# EDA & Visualization
-import shap
+# Install libraries
+#pip install numpy sklearn imblearn shap catboost pathlib
 
-# Modelling
-from sklearn import metrics
-from imblearn.over_sampling import SMOTE
-from catboost import CatBoostClassifier
-from pickle import dump
+#Import libraries
+import pandas as pd
+import numpy as np
+import usersetts as setts
+
+# Import preprocessing
 import etl
 
-# ## 3. Model training, selection and evaluation
-# ### 3.1. Models with oversampled data and all variables
-# ##### i. Oversampling
+# Import training
+import trainpipe
 
-def oversample(X_train,Y_train):
-    # Oversample train data
-    oversample = SMOTE(random_state=11)
-    X_train_sm, Y_train_sm = oversample.fit_resample(X_train, Y_train)
-    return X_train_sm, Y_train_sm
+def cleandata(df):  
+    # Data processing 
+    ### Ordinal features
+    df = etl.ordinalcopier(df)   
+    df = etl.ord_imputer(df, save_imputer = True)
+    df = etl.ord_encode(df, save_encoder = True)
 
-#### Catboost with oversampling
-def catboostcl(X_train,Y_train, X_test, Y_test, cat_features = None):
-    X_train_sm, Y_train_sm = oversample(X_train,Y_train)
-    cbc = CatBoostClassifier(random_seed=42, logging_level='Silent') # Do not output any logging information. 
-    # Train model 
-    if cat_features is None:
-        cat_features = etl.categorical_selector(X_train_sm)
-    cbclf = cbc.fit(X_train_sm,Y_train_sm, 
-            cat_features = cat_features,  
-            eval_set=(X_test, Y_test) 
-        )
-    dump(cbclf, open('catboostclassifier.pkl','wb'))
-    return cbclf
+    ### Nominal features
+    df = etl.nom_imputer(df, save_imputer = True)
+    df = etl.one_hot_encode(df)
 
-"""
-# Predict values
-y_pred = cbclf.predict(X_test)
-# Predict probabilities
-y_prob_pred = cbclf.predict_proba(X_test)[:,1]
+    ### Numeric features
+    df = etl.scale_numeric_columns(df)
+    return df
 
-# Store predictions in a Dataframe and sort by subscription probability
-predictions = pd.DataFrame({
-    "Subscribes": y_pred,
-    "Probability_yes": y_prob_pred
-})
+def training(X_train,Y_train, X_test, Y_test):
+    trainpipe.catboostcl(X_train,Y_train, X_test, Y_test)
 
-predictions.sort_values('Probability_yes', ascending = False, inplace = True)
-predictions.head()
 
-# Model evaluation:
-    # Training data performance
-    
-scoring = {'acc': 'accuracy',
-           'prec_macro': 'precision_macro',
-           'rec_macro': 'recall_macro',
-           'f1_macro': 'f1_macro'}
+if __name__=='__main__':
+    # Run importing and cleaning
+     # Import data 
+    X_train, X_test, Y_train, Y_test = etl.opensplitdata()
+    # Clean data
+    X_train = cleandata(X_train)
+    X_test = cleandata(X_test)
+    # Train model
+    cbclf = training(X_train,Y_train, X_test, Y_test)
 
-scores = cross_validate(cbclf, X_train_sm, Y_train_sm, cv=5, scoring=scoring)
 
-print ('Accuracy score : %.3f' % scores['test_acc'].mean())
-print ('Precision score : %.3f' % scores['test_prec_macro'].mean())
-print ('Recall (sensitivity) score : %.3f' % scores['test_rec_macro'].mean())
-print ('F1 score : %.3f' % scores['test_f1_macro'].mean())
-
-# Test data performance
-print(metrics.classification_report(Y_test, y_pred, target_names=tagsy, digits=3))
-
-# ### 3.3. Feature importance
-# #### b. Based on SHAP 
-explainer = shap.TreeExplainer(cbclf)
-shapvalues = explainer.shap_values(X_test)
-shap.summary_plot(shapvalues, X_test, plot_type='bar')
-
-#  ### 3.4. Customer profile and model explainability
-shap.summary_plot(shapvalues, X_test)
-"""

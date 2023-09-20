@@ -11,7 +11,7 @@
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
 
 
-#### MAIN SCRIPT ####
+#### MAIN TRAINING SCRIPT ####
 
 # Install libraries
 #pip install numpy sklearn imblearn shap catboost pathlib
@@ -20,31 +20,42 @@
 import pandas as pd
 import numpy as np
 import usersetts as setts
+from pickle import load
 
 # Import preprocessing
 import etl
-
-# Import training
-import train
 
 def cleandata(df):  
     # Data processing 
     ### Ordinal features
     df = etl.ordinalcopier(df)   
-    df = etl.ord_imputer(df, save_imputer = True)
-    df = etl.ord_encode(df, save_encoder = True)
+    df = etl.ord_imputer(df, load_imputer = True)
+    df = etl.ord_encode(df, load_encoder = True)
 
     ### Nominal features
-    df = etl.nom_imputer(df, save_imputer = True)
+    df = etl.nom_imputer(df, load_imputer = True)
     df = etl.one_hot_encode(df)
 
     ### Numeric features
     df = etl.scale_numeric_columns(df)
     return df
 
-def training(X_train,Y_train, X_test, Y_test):
-    train.catboostcl(X_train,Y_train, X_test, Y_test)
+def leadprediction(df):
+    model = load(open('catboostclassifier.pkl','rb'))
+    # Predict values
+    y_pred = model.predict(df)
+    # Predict probabilities
+    y_prob_pred = model.predict_proba(df)[:,1]
 
+    # Store predictions in a Dataframe and sort by subscription probability
+    predictions = pd.DataFrame({
+        "Subscribes": y_pred,
+        "Probability_yes": y_prob_pred
+    })
+    predictions.sort_values('Probability_yes', ascending = False, inplace = True)
+    return predictions
+    
+############ 19sep2023 Me quedé aquí ###################
 
 if __name__=='__main__':
     # Run importing and cleaning
@@ -54,6 +65,17 @@ if __name__=='__main__':
     X_train = cleandata(X_train)
     X_test = cleandata(X_test)
     # Train model
-    cbclf = training(X_train,Y_train, X_test, Y_test)
+    
 
 
+
+"""
+# ### 3.3. Feature importance
+# #### b. Based on SHAP 
+explainer = shap.TreeExplainer(cbclf)
+shapvalues = explainer.shap_values(X_test)
+shap.summary_plot(shapvalues, X_test, plot_type='bar')
+
+#  ### 3.4. Customer profile and model explainability
+shap.summary_plot(shapvalues, X_test)
+"""
