@@ -24,10 +24,8 @@ from pickle import dump, load
 # Data processing
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import SimpleImputer
-from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from imblearn.over_sampling import SMOTE
 
 
 # ## 1. Data importing 
@@ -97,7 +95,7 @@ def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', miss
               
     return df
 
-def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan, save_encoder = False):
+def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan, save_encoder = False, load_encod = False):
     """Function that encodes ordinal variables using sklearn's OrdinalEncoder
 
     Parameters:
@@ -107,16 +105,22 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
         handle_unknown (str): _description_. Defaults to 'use_encoded_value'.
         unknown_value (int or np.nan): _description_. Defaults to np.nan.
     """
-    ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
     # Optional: Serialize encoder
     if save_encoder is True:
+        ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
         dump(ordencoder, open('ordinalencoder.pkl','wb'))
+        df[cols] = ordencoder.fit_transform(df[cols])
+        df[cols] = df[cols].astype('int')
+    elif load_encod is True:
+        ordimputer = load(open('ordinalencoder.pkl','rb'))
+        df[cols] = ordimputer.fit_transform(df[cols])
     else:
-        pass
-    # Encode ordinal variables
-    df[cols] = ordencoder.fit_transform(df[cols])
-    df[cols] = df[cols].astype('int')
-    return df
+        # Encode ordinal variables
+        ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
+        df[cols] = ordencoder.fit_transform(df[cols])
+        df[cols] = df[cols].astype('int')
+        return df
+
 
 # ### 2.2. Nominal features
 

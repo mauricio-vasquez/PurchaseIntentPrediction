@@ -30,10 +30,10 @@ def cleandata(df):
     ### Ordinal features
     df = etl.ordinalcopier(df)   
     df = etl.ord_imputer(df, load_imputer = True)
-    df = etl.ord_encode(df, load_encoder = True)
+    df = etl.ord_encode(df, load_encod = True)
 
     ### Nominal features
-    df = etl.nom_imputer(df, load_imputer = True)
+    df = etl.nom_imputer(df, load_imputer = True) #### VERIFICAR: AL PARECER COLUMNAS PODRIAN NO ESTAR PRESENTES EN X_TEST #####
     df = etl.one_hot_encode(df)
 
     ### Numeric features
@@ -54,28 +54,26 @@ def leadprediction(df):
     })
     predictions.sort_values('Probability_yes', ascending = False, inplace = True)
     return predictions
-    
-############ 19sep2023 Me quedé aquí ###################
+
+def featimportanceviz(df):
+    # ### 3.3. Feature importance
+    # #### b. Based on SHAP 
+    model = load(open('catboostclassifier.pkl','rb'))
+    explainer = shap.TreeExplainer(model)
+    shapvalues = explainer.shap_values(df)
+    return shap.summary_plot(shapvalues, X_test, plot_type='bar')
 
 if __name__=='__main__':
     # Run importing and cleaning
      # Import data 
     X_train, X_test, Y_train, Y_test = etl.opensplitdata()
     # Clean data
-    X_train = cleandata(X_train)
     X_test = cleandata(X_test)
-    # Train model
-    
+    # Predict
+    predictions = leadprediction(X_test)
+    # Graph importance
+    featimportanceviz(X_test)
 
 
 
-"""
-# ### 3.3. Feature importance
-# #### b. Based on SHAP 
-explainer = shap.TreeExplainer(cbclf)
-shapvalues = explainer.shap_values(X_test)
-shap.summary_plot(shapvalues, X_test, plot_type='bar')
 
-#  ### 3.4. Customer profile and model explainability
-shap.summary_plot(shapvalues, X_test)
-"""
