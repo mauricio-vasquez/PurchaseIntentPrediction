@@ -113,6 +113,7 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
     elif load_encod is True:
         ordencoder = load(open('ordinalencoder.pkl','rb'))
         df[cols] = ordencoder.fit_transform(df[cols])
+        df[cols] = df[cols].astype('int')
     else:
         # Encode ordinal variables
         ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)

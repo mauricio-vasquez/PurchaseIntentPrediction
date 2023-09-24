@@ -72,9 +72,6 @@ if __name__=='__main__':
     X_test = cleandata(X_test)
     # Predict
     predictions = leadprediction(X_test)
-    # Graph importance
-    featimportanceviz(X_test)
-
 
 
 
