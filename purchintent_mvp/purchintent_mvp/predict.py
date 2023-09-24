@@ -21,6 +21,7 @@ import pandas as pd
 import numpy as np
 import usersetts as setts
 from pickle import load
+import shap
 
 # Import preprocessing
 import etl
@@ -33,7 +34,7 @@ def cleandata(df):
     df = etl.ord_encode(df, load_encod = True)
 
     ### Nominal features
-    df = etl.nom_imputer(df, load_imputer = True) #### VERIFICAR: AL PARECER COLUMNAS PODRIAN NO ESTAR PRESENTES EN X_TEST #####
+    df = etl.nom_imputer(df, load_imputer = True)
     df = etl.one_hot_encode(df)
 
     ### Numeric features

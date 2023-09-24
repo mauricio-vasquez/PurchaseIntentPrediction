@@ -92,7 +92,6 @@ def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', miss
     else:
         ordimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
         df[cols] = ordimputer.fit_transform(df[cols])
-              
     return df
 
 def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_categories, handle_unknown='use_encoded_value', unknown_value=np.nan, save_encoder = False, load_encod = False):
@@ -112,14 +111,15 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
         df[cols] = ordencoder.fit_transform(df[cols])
         df[cols] = df[cols].astype('int')
     elif load_encod is True:
-        ordimputer = load(open('ordinalencoder.pkl','rb'))
-        df[cols] = ordimputer.fit_transform(df[cols])
+        ordencoder = load(open('ordinalencoder.pkl','rb'))
+        df[cols] = ordencoder.fit_transform(df[cols])
     else:
         # Encode ordinal variables
         ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
         df[cols] = ordencoder.fit_transform(df[cols])
         df[cols] = df[cols].astype('int')
-        return df
+    return df
+    
 
 
 # ### 2.2. Nominal features
