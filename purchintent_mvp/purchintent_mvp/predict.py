@@ -19,9 +19,11 @@
 #Import libraries
 import pandas as pd
 import numpy as np
+import math
 import usersetts as setts
 from pickle import load
-import shap
+import streamlit as st
+
 
 # Import preprocessing
 import etl
@@ -47,22 +49,48 @@ def leadprediction(df):
     y_pred = model.predict(df)
     # Predict probabilities
     y_prob_pred = model.predict_proba(df)[:,1]
+    # Calculate a ranking, 1: less likely to suscribe; 5: the most likely to suscribe
+    ranking = np.ceil(y_prob_pred/0.2) # lead suscription ranking from 1 to 5, 5 is the most likely
+    ranking = ranking.astype('int')
 
     # Store predictions in a Dataframe and sort by subscription probability
     predictions = pd.DataFrame({
         "Subscribes": y_pred,
-        "Probability_yes": y_prob_pred
+        "Probability_yes": y_prob_pred,
+        "Ranking": ranking, 
+        "Contacted:": False,
     })
     predictions.sort_values('Probability_yes', ascending = False, inplace = True)
     return predictions
-
-def featimportanceviz(df):
-    # ### 3.3. Feature importance
-    # #### b. Based on SHAP 
-    model = load(open('catboostclassifier.pkl','rb'))
-    explainer = shap.TreeExplainer(model)
-    shapvalues = explainer.shap_values(df)
-    return shap.summary_plot(shapvalues, X_test, plot_type='bar')
+def userapp(df):
+    edited_df = st.data_editor(
+    df,
+    column_config={
+        "Subscribes": "User may subscribe?",
+        
+        "Probability_yes": st.column_config.ProgressColumn(
+            label= "Subscription probability",
+            format=".0%",
+            min_value=0,
+            max_value=1),
+                                                                  
+        "Ranking": st.column_config.NumberColumn(
+            label="Subscription likelihood ranking",
+            help="1: Less likely to suscribe; 5: Most likely to suscribe",
+            min_value=1,
+            max_value=5,
+            step=1,
+            format="%d ⭐",
+        ),
+        "Contacted": st.column_config.CheckboxColumn(
+            label="Contacted?",
+            help="Check the box if the lead was called already",
+            
+            )
+    },
+    disabled=["Subscribes", "Probability_yes", "Ranking"],
+    hide_index=False)
+    return edited_df
 
 if __name__=='__main__':
     # Run importing and cleaning
@@ -72,6 +100,6 @@ if __name__=='__main__':
     X_test = cleandata(X_test)
     # Predict
     predictions = leadprediction(X_test)
-
+    userapp(predictions)
 
 
