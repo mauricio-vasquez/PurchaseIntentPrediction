@@ -19,7 +19,6 @@
 #Import libraries
 import pandas as pd
 import numpy as np
-import math
 import usersetts as setts
 from pickle import load
 import streamlit as st
@@ -56,7 +55,7 @@ def leadprediction(df):
     # Store predictions in a Dataframe and sort by subscription probability
     predictions = pd.DataFrame({
         "Subscribes": y_pred,
-        "Probability_yes": y_prob_pred,
+        "Probability_yes": y_prob_pred*100,
         "Ranking": ranking, 
         "Contacted:": False,
     })
@@ -66,13 +65,13 @@ def userapp(df):
     edited_df = st.data_editor(
     df,
     column_config={
-        "Subscribes": "User may subscribe?",
+        "Subscribes": "Lead may subscribe?",
         
         "Probability_yes": st.column_config.ProgressColumn(
-            label= "Subscription probability",
-            format=".0%",
+            label= "Subscription probability (%)",
+            format="%i",
             min_value=0,
-            max_value=1),
+            max_value=100),
                                                                   
         "Ranking": st.column_config.NumberColumn(
             label="Subscription likelihood ranking",
