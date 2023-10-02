@@ -10,17 +10,19 @@
 # #### Contact email: mauricio_vasquez_andrade@hotmail.com
 # #### LinkedIn: https://www.linkedin.com/in/mauricio-vasquez-andrade-ecuador/
 
-
 #### CONFIG SCRIPT ####
 # ## Define config variables
 
 # a. Paths
 from pathlib import Path, PureWindowsPath
-path = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing\\Data\\Apziva\\"
-#path = r"C:\\Users\\vasquezm\\OneDrive - ROBALINO\\Documentos\\Mauricio V\\Capacitaciones\\Autocapacitacion\\Apziva\\Project 2 - term deposit marketing\\Data\\Apziva\\"
+projectpath = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing"
+filedir = Path(projectpath) / 'Data\\Apziva'
+packagedir = Path(projectpath) /'PurchaseIntentPrediction\\purchintent_mvp\\purchintent_mvp'
+pickledir = Path(packagedir) / 'pickle_objs'
+
 file = 'term-deposit-marketing-2020.csv'
 
-def filepath(file = file, path = path):
+def filepath(file = file, path = filedir):
     file_to_open = Path(path) / file
     return file_to_open
 
