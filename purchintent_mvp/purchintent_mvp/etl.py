@@ -80,14 +80,15 @@ def ord_imputer(df, cols = setts.ordinal_columns, strategy='most_frequent', miss
         load_imputer: boolean, True: loads serialized sklearn imputer. False: do not load imputer. 
     For more information, see https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html 
     """
+    ordinalpickleimp = setts.filepath(file = 'ordinalimputer.pkl', path= setts.pickledir)
    
     # Optional: Serialize imputer
     if save_imputer is True:
         ordimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
-        dump(ordimputer, open('ordinalimputer.pkl','wb'))
+        dump(ordimputer, open(ordinalpickleimp,'wb'))
         df[cols] = ordimputer.fit_transform(df[cols])
     elif load_imputer is True:
-        ordimputer = load(open('ordinalimputer.pkl','rb'))
+        ordimputer = load(open(ordinalpickleimp,'rb'))
         df[cols] = ordimputer.fit_transform(df[cols])
     else:
         ordimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
@@ -104,14 +105,15 @@ def ord_encode(df, cols = setts.ordinal_columns, categories=setts.ordinal_catego
         handle_unknown (str): _description_. Defaults to 'use_encoded_value'.
         unknown_value (int or np.nan): _description_. Defaults to np.nan.
     """
+    ordinalpickleenc = setts.filepath(file = 'ordinalencoder.pkl', path= setts.pickledir)
     # Optional: Serialize encoder
     if save_encoder is True:
         ordencoder = OrdinalEncoder(categories=categories, handle_unknown=handle_unknown, unknown_value=unknown_value)
-        dump(ordencoder, open('ordinalencoder.pkl','wb'))
+        dump(ordencoder, open(ordinalpickleenc,'wb'))
         df[cols] = ordencoder.fit_transform(df[cols])
         df[cols] = df[cols].astype('int')
     elif load_encod is True:
-        ordencoder = load(open('ordinalencoder.pkl','rb'))
+        ordencoder = load(open(ordinalpickleenc,'rb'))
         df[cols] = ordencoder.fit_transform(df[cols])
         df[cols] = df[cols].astype('int')
     else:
@@ -174,16 +176,19 @@ def nom_imputer(df, nom_cols = None, ordinal_cols = setts.ordinal_columns, strat
         
     For more information, see https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html 
     """
+       
     if nom_cols is None:
         nom_cols = nominal_cols(df, ordinal_cols)
-
+    
     # Optional: Serialize imputer
     if save_imputer is True:
-        nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)    
-        dump(nomimputer, open('nominalimputer.pkl','wb'))
+        nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)
+        nominalpickleimp = setts.filepath(file = 'nominalimputer.pkl', path= setts.pickledir)    
+        dump(nomimputer, open(nominalpickleimp,'wb'))
         df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
     elif load_imputer is True:
-        nomimputer = load(open('nominalimputer.pkl','rb'))
+        nominalpickleimp = setts.filepath(file = 'nominalimputer.pkl', path= setts.pickledir)
+        nomimputer = load(open(nominalpickleimp,'rb'))
         df[nom_cols] = nomimputer.fit_transform(df[nom_cols])
     else:
         nomimputer = SimpleImputer(strategy = strategy, missing_values = missing_values)

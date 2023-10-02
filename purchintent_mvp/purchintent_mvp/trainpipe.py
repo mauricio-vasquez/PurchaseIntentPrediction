@@ -41,5 +41,6 @@ def catboostcl(X_train,Y_train, X_test, Y_test, cat_features = None):
             cat_features = cat_features,  
             eval_set=(X_test, Y_test) 
         )
-    dump(cbclf, open('catboostclassifier.pkl','wb'))
+    catpickle = setts.filepath(file = 'catboostclassifier.pkl', path= setts.pickledir)
+    dump(cbclf, open(catpickle,'wb'))
     return cbclf

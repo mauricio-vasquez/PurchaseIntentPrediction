@@ -43,7 +43,8 @@ def cleandata(df):
     return df
 
 def leadprediction(df):
-    model = load(open('catboostclassifier.pkl','rb'))
+    catpickle = setts.filepath(file = 'catboostclassifier.pkl', path= setts.pickledir)
+    model = load(open(catpickle,'rb'))
     # Predict values
     y_pred = model.predict(df)
     # Predict probabilities
@@ -62,6 +63,7 @@ def leadprediction(df):
     predictions.sort_values('Probability_yes', ascending = False, inplace = True)
     return predictions
 def userapp(df):
+    st.header('Lead prediction system MVP')
     edited_df = st.data_editor(
     df,
     column_config={
