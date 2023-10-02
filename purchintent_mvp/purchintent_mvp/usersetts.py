@@ -15,10 +15,10 @@
 
 # a. Paths
 from pathlib import Path, PureWindowsPath
-projectpath = r"C:\\Users\USER\Documents\\Mauricio V\\Apziva\\Projects\\Project 2 - IntentMarketing"
-filedir = Path(projectpath) / 'Data\\Apziva'
-packagedir = Path(projectpath) /'PurchaseIntentPrediction\\purchintent_mvp\\purchintent_mvp'
-pickledir = Path(packagedir) / 'pickle_objs'
+projectpath = Path("C:/Users/USER/Documents/Mauricio V/Apziva/Projects/Project 2 - IntentMarketing")
+filedir = projectpath / 'Data' / 'Apziva'
+packagedir = projectpath / 'PurchaseIntentPrediction' / 'purchintent_mvp' / 'purchintent_mvp'
+pickledir = packagedir / 'pickle_objs'
 
 file = 'term-deposit-marketing-2020.csv'
 
